@@ -108,7 +108,7 @@ export function titleCase(text: string): string {
 }
 
 export function sentenceCase(text: string): string {
-  let sentencecased: string = toSentenceCase(text)
+  let sentencecased: string = toSentenceCase(text, true)
 
   // restore protected parts from original
   text.replace(/<span class="nocase">.*?<\/span>|<nc>.*?<\/nc>/gi, (match: string, offset: number) => {
