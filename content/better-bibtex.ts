@@ -370,7 +370,7 @@ Zotero.Translate.Export.prototype.Sandbox.BetterBibTeX = {
   // extractFields(_sandbox, item) { return Extra.get(item.extra) },
 
   cacheFetch(sandbox: { translator: { label: string }[] }, itemID: number, options: { exportNotes: boolean, useJournalAbbreviation: boolean }, prefs: any) {
-    if (!Preference.caching) return false
+    if (!Preference.cache) return false
 
     const collection = Cache.getCollection(sandbox.translator[0].label)
     if (!collection) return false
@@ -395,7 +395,7 @@ Zotero.Translate.Export.prototype.Sandbox.BetterBibTeX = {
   },
 
   cacheStore(sandbox: { translator: { label: string }[] }, itemID: number, options: { exportNotes: boolean, useJournalAbbreviation: boolean }, prefs: any, entry: any, metadata: any) {
-    if (!Preference.caching) return false
+    if (!Preference.cache) return false
 
     if (!metadata) metadata = {}
 
@@ -491,12 +491,12 @@ $patch$(Zotero.Translate.Export.prototype, 'translate', original => function Zot
         if (displayOptions.exportFileData) { // when exporting file data, the user was asked to pick a directory rather than a file
           displayOptions.exportDir = this.location.path
           displayOptions.exportPath = OS.Path.join(this.location.path, `${this.location.leafName}.${translator.target}`)
-          displayOptions.caching = false
+          displayOptions.cache = false
         }
         else {
           displayOptions.exportDir = this.location.parent.path
           displayOptions.exportPath = this.location.path
-          displayOptions.caching = true
+          displayOptions.cache = true
         }
       }
       const override = {
@@ -516,12 +516,12 @@ $patch$(Zotero.Translate.Export.prototype, 'translate', original => function Zot
           (path: string) => Zotero.File.getContents(path) // eslint-disable-line @typescript-eslint/no-unsafe-return
         ),
       }
-      displayOptions.caching = displayOptions.caching && !override.postscript && !override.preferences && !override.strings
+      displayOptions.cache = displayOptions.cache && !override.postscript && !override.preferences && !override.strings
 
       if (override.postscript) displayOptions.preference_postscript = override.postscript
       if (typeof override.strings === 'string') displayOptions.preference_strings = override.strings
       if (override.preferences) {
-        displayOptions.caching = false
+        displayOptions.cache = false
         for (const [pref, value] of Object.entries(override.preferences)) {
           if (typeof value !== typeof preferences.defaults[pref]) {
             log.error(`preference override for ${pref}: expected ${typeof preferences.defaults[pref]}, got ${typeof value}`)
